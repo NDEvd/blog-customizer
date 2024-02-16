@@ -1,9 +1,12 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties } from 'react';
+import { useState, StrictMode, CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import { Article } from './components/article/Article';
-import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
+import {
+	ArticleParamsForm,
+	TParams,
+} from './components/article-params-form/ArticleParamsForm';
 import { defaultArticleState } from './constants/articleProps';
 
 import './styles/index.scss';
@@ -13,19 +16,50 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
+	const [stateArticle, setStateArticle] = useState({
+		font: defaultArticleState.fontFamilyOption.value,
+		fontSize: defaultArticleState.fontSizeOption.value,
+		fontColor: defaultArticleState.fontColor.value,
+		backgroundColor: defaultArticleState.backgroundColor.value,
+		contentWidth: defaultArticleState.contentWidth.value,
+	});
+
+	const handleParams = (params: TParams) => {
+		setStateArticle({
+			font: params.fontForm.value,
+			fontSize: params.fontSize.value,
+			fontColor: params.fontColor.value,
+			backgroundColor: params.backgroundColor.value,
+			contentWidth: params.articleWight.value,
+		});
+	};
+
+	const handleArticleReset = () => {
+		setStateArticle({
+			font: defaultArticleState.fontFamilyOption.value,
+			fontSize: defaultArticleState.fontSizeOption.value,
+			fontColor: defaultArticleState.fontColor.value,
+			backgroundColor: defaultArticleState.backgroundColor.value,
+			contentWidth: defaultArticleState.contentWidth.value,
+		});
+	};
+
 	return (
 		<div
 			className={clsx(styles.main)}
 			style={
 				{
-					'--font-family': defaultArticleState.fontFamilyOption.value,
-					'--font-size': defaultArticleState.fontSizeOption.value,
-					'--font-color': defaultArticleState.fontColor.value,
-					'--container-width': defaultArticleState.contentWidth.value,
-					'--bg-color': defaultArticleState.backgroundColor.value,
+					'--font-family': stateArticle.font,
+					'--font-size': stateArticle.fontSize,
+					'--font-color': stateArticle.fontColor,
+					'--container-width': stateArticle.contentWidth,
+					'--bg-color': stateArticle.backgroundColor,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm />
+			<ArticleParamsForm
+				handleParams={handleParams}
+				handleArticleReset={handleArticleReset}
+			/>
 			<Article />
 		</div>
 	);

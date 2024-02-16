@@ -1,19 +1,32 @@
+import clsx from 'clsx';
 import arrow from 'src/images/arrow.svg';
 
 import styles from './ArrowButton.module.scss';
 
-/** Функция для обработки открытия/закрытия формы */
-export type OnClick = () => void;
+type TArrowButtonProps = {
+	isClickOpen: boolean;
+	onClick: () => void;
+};
 
-export const ArrowButton = () => {
+export const ArrowButton = ({ isClickOpen, onClick }: TArrowButtonProps) => {
 	return (
-		/* Не забываем указаывать role и aria-label атрибуты для интерактивных элементов */
 		<div
 			role='button'
 			aria-label='Открыть/Закрыть форму параметров статьи'
 			tabIndex={0}
-			className={styles.container}>
-			<img src={arrow} alt='иконка стрелочки' className={styles.arrow} />
+			className={
+				isClickOpen
+					? clsx(styles.container, styles.container_open)
+					: styles.container
+			}
+			onClick={onClick}>
+			<img
+				src={arrow}
+				alt='иконка стрелочки'
+				className={
+					isClickOpen ? clsx(styles.arrow, styles.arrow_open) : styles.arrow
+				}
+			/>
 		</div>
 	);
 };
