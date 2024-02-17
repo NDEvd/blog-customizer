@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useState, FormEvent, useRef, useEffect } from 'react';
+import { useState, FormEvent, useRef } from 'react';
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
 import { Select } from '../select/Select';
@@ -16,6 +16,8 @@ import {
 	backgroundColors,
 	contentWidthArr,
 } from '../../constants/articleProps';
+
+import { useClose } from 'src/hooks/useClose';
 
 import styles from './ArticleParamsForm.module.scss';
 
@@ -38,11 +40,9 @@ export const ArticleParamsForm = ({
 }: TArticleParamsFormProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 
-	const [fontForm, setFontForm] = useState(
-		defaultArticleState.fontFamilyOption
-	);
+	const [fontForm, setFontForm] = useState(defaultArticleState.font);
 	const [fontColor, setFontColor] = useState(defaultArticleState.fontColor);
-	const [fontSize, setFontSize] = useState(defaultArticleState.fontSizeOption);
+	const [fontSize, setFontSize] = useState(defaultArticleState.fontSize);
 	const [backgroundColor, setBackgroundColor] = useState(
 		defaultArticleState.backgroundColor
 	);
@@ -51,11 +51,11 @@ export const ArticleParamsForm = ({
 	);
 
 	const params = {
-		fontForm: fontForm,
-		fontColor: fontColor,
-		fontSize: fontSize,
-		backgroundColor: backgroundColor,
-		articleWight: articleWight,
+		fontForm,
+		fontColor,
+		fontSize,
+		backgroundColor,
+		articleWight,
 	};
 
 	const handleClick = () => {
@@ -84,9 +84,9 @@ export const ArticleParamsForm = ({
 
 	const handleReset = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		setFontForm(defaultArticleState.fontFamilyOption);
+		setFontForm(defaultArticleState.font);
 		setFontColor(defaultArticleState.fontColor);
-		setFontSize(defaultArticleState.fontSizeOption);
+		setFontSize(defaultArticleState.fontSize);
 		setBackgroundColor(defaultArticleState.backgroundColor);
 		setArticleWight(defaultArticleState.contentWidth);
 		handleArticleReset();
@@ -97,34 +97,13 @@ export const ArticleParamsForm = ({
 		handleParams(params);
 	};
 
-	useEffect(() => {
-		function closeByEscape(event: KeyboardEvent) {
-			if (event.key === 'Escape') {
-				setIsOpen(false);
-			}
-		}
-		if (isOpen) {
-			document.addEventListener('keydown', closeByEscape);
-			return () => {
-				document.removeEventListener('keydown', closeByEscape);
-			};
-		}
-	}, [isOpen]);
+	const formRef = useRef<HTMLElement>(null);
 
-	const formRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		function handleClickOutside(event: any) {
-			if (formRef.current && !formRef.current.contains(event.target)) {
-				setIsOpen(false);
-			}
-		}
-
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, [isOpen]);
+	useClose({
+		isOpen,
+		onClose: () => setIsOpen(false),
+		rootRef: formRef,
+	});
 
 	return (
 		<>

@@ -14,18 +14,18 @@ export const ArrowButton = ({ isClickOpen, onClick }: TArrowButtonProps) => {
 			role='button'
 			aria-label='Открыть/Закрыть форму параметров статьи'
 			tabIndex={0}
-			className={
-				isClickOpen
-					? clsx(styles.container, styles.container_open)
-					: styles.container
-			}
+			className={clsx({
+				[styles.container]: true,
+				[styles.container_open]: isClickOpen,
+			})}
 			onClick={onClick}>
 			<img
 				src={arrow}
 				alt='иконка стрелочки'
-				className={
-					isClickOpen ? clsx(styles.arrow, styles.arrow_open) : styles.arrow
-				}
+				className={clsx({
+					[styles.arrow]: true,
+					[styles.arrow_open]: isClickOpen,
+				})}
 			/>
 		</div>
 	);
